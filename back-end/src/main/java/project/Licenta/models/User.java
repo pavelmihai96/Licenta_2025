@@ -60,4 +60,18 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public Long getIdByUsername(String username) {
+        if (this.username.equals(username)) {
+            return this.id;
+        }
+        return 0L;
+    }
+
+    public String getEmailByUsername(String username) {
+        if (this.username.equals(username)) {
+            return this.email;
+        }
+        return "";
+    }
 }

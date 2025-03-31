@@ -59,13 +59,16 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/licenta/auth/**").permitAll()
                                 .requestMatchers("/licenta/test/**").permitAll()
+                                .requestMatchers("/licenta/provs/").permitAll()
                                 .anyRequest().authenticated()
                 );
+
 
         http.authenticationProvider(authenticationProvider());
 
@@ -73,13 +76,13 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-/*
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // ✅ Allowed origins
+        configuration.setAllowedOrigins(List.of("http://localhost:8081")); // ✅ Allowed origins
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ Allowed HTTP methods
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type")); // ✅ Allowed headers
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Origin")); // ✅ Allowed headers
         configuration.setAllowCredentials(true); // For cookies/auth headers if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -87,5 +90,5 @@ public class WebSecurityConfig {
         return source;
     }
 
- */
+
 }

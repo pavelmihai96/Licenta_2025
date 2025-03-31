@@ -6,8 +6,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import project.Licenta.models.EnumRole;
+import project.Licenta.models.Role;
 import project.Licenta.models.User;
+import project.Licenta.payload.response.UserResponse;
 import project.Licenta.repositories.UserRepository;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -21,6 +27,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
         return UserDetailsImpl.build(user);
+    }
+
+    public List<UserResponse> getAll() {
+        List<User> users = userRepository.findAll();
+        Map<String, Set<Role>> user_roles = users.stream()
+                .collect(Collectors.toMap(User::getUsername, User::getRoles));
+
+        List<UserResponse> userResponses = new ArrayList<>();
+        for(Map.Entry<String, Set<Role>> i : user_roles.entrySet()) {
+            if (i.getValue().stream().anyMatch(j -> j.getName() == EnumRole.ROLE_PROVIDER)){
+                List<String> userEmailByUsername = users.stream().map(j -> j.getEmailByUsername(i.getKey())).toList();
+                userResponses.add(new UserResponse(userEmailByUsername.get(0), i.getKey()));
+            }
+        }
+        return userResponses;
     }
 
 }

@@ -18,13 +18,13 @@ public class TestController {
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('PROVIDER')")
     public String userAccess() {
-        return "User Content.";
+        return "User Page.";
     }
 
     @GetMapping("/prov")
     @PreAuthorize("hasRole('PROVIDER')")
     public String providerAccess() {
-        return "Provider Board.";
+        return "Provider Page.";
     }
 
 }

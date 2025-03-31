@@ -81,7 +81,7 @@ class App extends Component<Props, State> {
               {showProvider && (
                   <li className="nav-item">
                     <Link to={"/prov"} className="nav-link">
-                      Provider Board
+                      Provider Page
                     </Link>
                   </li>
               )}
@@ -89,7 +89,7 @@ class App extends Component<Props, State> {
               {showUser && (
                   <li className="nav-item">
                     <Link to={"/user"} className="nav-link">
-                      User Board
+                      User Page
                     </Link>
                   </li>
               )}
