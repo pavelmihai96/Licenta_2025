@@ -35,7 +35,7 @@ public class SubscriptionController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
-    public Subscription create(@RequestBody Subscription subscription) {
+    public String create(@RequestBody Subscription subscription) {
         return service.create(subscription);
     }
 
