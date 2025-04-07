@@ -34,6 +34,21 @@ label {
   text-align: center;
 }
 .signupbutton {
-  top:50%
+  padding: 10px 20px;
 }
-
+.nav-link {
+  color: white;
+}
+.appname {
+  color: floralwhite;
+  padding-left: 10px;
+}
+.formgroup {
+  display: flex; /* Enables CSS flexbox */
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 5vh; /* Full height to demonstrate vertical centering */
+}
+.loginbutton {
+  padding: 10px 20px;
+}

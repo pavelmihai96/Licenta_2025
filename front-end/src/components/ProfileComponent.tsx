@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { Navigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
-import UserType from "../UserType";
+import UserType from "../payload/response/UserType";
 
 type Props = {};
 

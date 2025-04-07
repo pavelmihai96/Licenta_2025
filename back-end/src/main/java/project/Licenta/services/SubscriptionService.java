@@ -6,30 +6,38 @@ import org.springframework.stereotype.Service;
 import project.Licenta.embedded.SubscriptionId;
 import project.Licenta.models.Subscription;
 import project.Licenta.models.User;
+import project.Licenta.payload.request.SubReq;
+import project.Licenta.payload.response.SubscriptionResponse;
 import project.Licenta.repositories.SubscriptionRepository;
 import project.Licenta.repositories.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @NoArgsConstructor
 public class SubscriptionService {
     @Autowired
-    private SubscriptionRepository thisRepository;
+    private SubscriptionRepository subRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     public SubscriptionService(SubscriptionRepository subscriptionRepository) {
-        this.thisRepository = subscriptionRepository;
+        this.subRepository = subscriptionRepository;
     }
 
-    public List<Subscription> getAll() {
-        return thisRepository.findAll();
+    public List<SubscriptionResponse> getAll(Long user_id) {
+        List<Subscription> subList = subRepository.findAllById_UserId(user_id);
+        List<SubscriptionResponse> subscriptionResponseList = new ArrayList<>();
+        for (Subscription s : subList) {
+            subscriptionResponseList.add(new SubscriptionResponse(s.getId().getProvider_id(), userRepository.findUsernameById(s.getId().getProvider_id()).getUsername(), s.getStatus(), s.getIndex_old(), s.getIndex_read()));
+        }
+        return subscriptionResponseList;
     }
 
     public Subscription getById(Long user_id, Long provider_id) {
-        return thisRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
+        return subRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
     }
 
     public String create(Subscription subscription) {
@@ -41,35 +49,34 @@ public class SubscriptionService {
         // populate the User_sub and Provider_sub with data
         subscription.setUser_sub(user);
         subscription.setProvider_sub(provider);
-        thisRepository.save(subscription);
+        subRepository.save(subscription);
 
         return "Added successfully";
     }
 
     public Subscription update(Long user_id, Long provider_id, Subscription s) {
-        Subscription existing = thisRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
+        Subscription existing = subRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
         if (existing != null) {
             existing.setStatus(s.getStatus());
             existing.setIndex_read(s.getIndex_read());
             existing.setIndex_old(s.getIndex_old());
-            return thisRepository.save(existing);
+            return subRepository.save(existing);
         } else {
             return null;
         }
     }
 
-    public Subscription updateStatus(Long user_id, Long provider_id, String updateStatus) {
-        Subscription existing = thisRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
+    public String updateStatus(Long user_id, Long provider_id, SubReq subreq) {
+        Subscription existing = subRepository.findById(new SubscriptionId(user_id, provider_id)).orElse(null);
+        assert existing != null;
 
-        if (existing != null) {
-            existing.setStatus(updateStatus);
-            return thisRepository.save(existing);
-        } else {
-            return null;
-        }
+        existing.setStatus(subreq.getStatus());
+        subRepository.save(existing);
+        return "Status updated to " + subreq.getStatus();
+        //return new SubscriptionResponse(existing.getId().getProvider_id(), userRepository.findUsernameById(existing.getId().getProvider_id()).getUsername(), existing.getStatus(), existing.getIndex_old(), existing.getIndex_read());
     }
 
     public void delete(Long user_id, Long provider_id) {
-        thisRepository.deleteById(new SubscriptionId(user_id, provider_id));
+        subRepository.deleteById(new SubscriptionId(user_id, provider_id));
     }
 }

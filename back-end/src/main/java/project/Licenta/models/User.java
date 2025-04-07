@@ -74,4 +74,15 @@ public class User {
         }
         return "";
     }
+
+    public String getUserRole(){
+        for (Role role : roles) {
+            if (role.getName() == EnumRole.ROLE_PROVIDER) {
+                return "PROVIDER";
+            } else {
+                return "USER";
+            }
+        }
+        return "";
+    }
 }

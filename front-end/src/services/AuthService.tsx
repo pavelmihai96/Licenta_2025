@@ -25,12 +25,7 @@ class AuthService {
 
     register(username: string, email: string, role: Array<string>, password: string ) {
         console.log(username, email, role);
-        return axios.post(API_BASE_URL + "signup", {
-            username,
-            email,
-            role,
-            password
-        });
+        return axios.post(API_BASE_URL + "signup", {username, email, role, password});
     }
 
     getCurrentUser() {

@@ -13,7 +13,7 @@ export default class Home extends Component<Props, State> {
         super(props);
 
         this.state = {
-            content: ""
+            content: "Pay your bills from one place."
         };
     }
 

@@ -196,7 +196,7 @@ export default class Register extends Component<Props, State> {
                                         />
                                     </div>
 
-                                    <div className="form-group signupform">
+                                    <div className="form-group formgroup">
                                         <button type="submit" className="btn btn-primary btn-block signupbutton">Sign Up</button>
                                     </div>
                                 </div>

@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.Licenta.models.Subscription;
+import project.Licenta.payload.request.SubReq;
+import project.Licenta.payload.response.SubscriptionResponse;
 import project.Licenta.repositories.SubscriptionRepository;
 import project.Licenta.repositories.UserRepository;
 import project.Licenta.services.SubscriptionService;
@@ -20,10 +22,10 @@ public class SubscriptionController {
         this.service = service;
     }
 
-    @GetMapping("")
-    @PreAuthorize("hasRole('USER') or hasRole('PROVIDER')")
-    public List<Subscription> getAll() {
-        return service.getAll();
+    @GetMapping("/{user_id}")
+    @PreAuthorize("hasRole('USER')")
+    public List<SubscriptionResponse> getAll(@PathVariable Long user_id) {
+        return service.getAll(user_id);
     }
 
 
@@ -47,10 +49,10 @@ public class SubscriptionController {
     }
      */
 
-    @PutMapping("/{updateStatus}/{user_id}/{provider_id}")
+    @PutMapping("/{user_id}/{provider_id}")
     @PreAuthorize("hasRole('USER')")
-    public void updateStatus(@PathVariable Long user_id, @PathVariable Long provider_id, @PathVariable String updateStatus) {
-        service.updateStatus(user_id, provider_id, updateStatus);
+    public String updateStatus(@PathVariable Long user_id, @PathVariable Long provider_id, @RequestBody SubReq subreq) {
+        return service.updateStatus(user_id, provider_id, subreq);
     }
 
     /*

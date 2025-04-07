@@ -6,10 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import project.Licenta.embedded.SubscriptionId;
 import project.Licenta.models.EnumRole;
 import project.Licenta.models.Role;
+import project.Licenta.models.Subscription;
 import project.Licenta.models.User;
 import project.Licenta.payload.response.UserResponse;
+import project.Licenta.repositories.SubscriptionRepository;
 import project.Licenta.repositories.UserRepository;
 
 import java.util.*;
@@ -20,6 +23,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    SubscriptionRepository subRepository;
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,18 +35,30 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
-    public List<UserResponse> getAll() {
+    public List<UserResponse> getAll(Long user_id) {
         List<User> users = userRepository.findAll();
-        Map<String, Set<Role>> user_roles = users.stream()
-                .collect(Collectors.toMap(User::getUsername, User::getRoles));
+
+        Map<String, Set<Role>> user_roles = new HashMap<>();
+
+        for(User u: users){
+            if (Objects.equals(u.getUserRole(), "PROVIDER")){
+                user_roles.put(u.getUsername(), u.getRoles());
+            }
+        }
+
+        String subscribed = "";
 
         List<UserResponse> userResponses = new ArrayList<>();
         for(Map.Entry<String, Set<Role>> i : user_roles.entrySet()) {
-            if (i.getValue().stream().anyMatch(j -> j.getName() == EnumRole.ROLE_PROVIDER)){
-                //List<String> userEmailByUsername = users.stream().map(j -> j.getEmailByUsername(i.getKey())).toList();
-                //List<User> userEmailByUsername = users.stream().map(j -> userRepository.findEmailByUsername(i.getKey())).toList();
-                userResponses.add(new UserResponse(userRepository.findIdByUsername(i.getKey()).getId(), userRepository.findEmailByUsername(i.getKey()).getEmail(), i.getKey()));
+            //List<String> userEmailByUsername = users.stream().map(j -> j.getEmailByUsername(i.getKey())).toList();
+            //List<User> userEmailByUsername = users.stream().map(j -> userRepository.findEmailByUsername(i.getKey())).toList();
+            if (subRepository.findById(new SubscriptionId(user_id, userRepository.findIdByUsername(i.getKey()).getId())).orElse(null) != null){
+                subscribed = "Subscribed";
+            } else {
+                subscribed = "Not Subscribed";
             }
+            userResponses.add(new UserResponse(userRepository.findIdByUsername(i.getKey()).getId(), userRepository.findEmailByUsername(i.getKey()).getEmail(), i.getKey(), subscribed));
+
         }
         return userResponses;
     }

@@ -16,9 +16,9 @@ class UserService {
         return axios.get(API_BASE_URL + 'test/prov', { headers: authHeader() });
     }
 
-    getAllProviders(){
-        console.log(authHeader());
-        return axios.get(API_BASE_URL + 'provs', { headers: authHeader() });
+    getAllProviders(id: number){
+        console.log(authHeader(), id);
+        return axios.get(API_BASE_URL + 'provs/' + id, { headers: authHeader() });
     }
 
 }

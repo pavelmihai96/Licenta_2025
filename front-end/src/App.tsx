@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AuthService from "./services/AuthService";
-import UserType from './UserType';
+import UserType from './payload/response/UserType';
 
 import Login from "./components/LoginComponent";
 import Register from "./components/RegisterComponent";
@@ -12,6 +12,7 @@ import Home from "./components/HomeComponent";
 import Profile from "./components/ProfileComponent";
 import BoardUser from "./components/BoardUserComponent";
 import BoardProvider from "./components/BoardProviderComponent";
+import SubscriptionComponent from "./components/SubscriptionComponent";
 
 import eventFile from "./eventFile";
 
@@ -67,8 +68,8 @@ class App extends Component<Props, State> {
 
     return (
         <div>
-          <nav className="navbar navbar-expand navbar-light bg-dark-subtle">
-            <Link to={"/"} className="navbar-brand">
+          <nav className="navbar navbar-expand navbar-light bg-primary">
+            <Link to={"/"} className="navbar-brand appname">
               InPay
             </Link>
             <div className="navbar-nav mr-auto">
@@ -81,7 +82,7 @@ class App extends Component<Props, State> {
               {showProvider && (
                   <li className="nav-item">
                     <Link to={"/prov"} className="nav-link">
-                      Provider Page
+                      General
                     </Link>
                   </li>
               )}
@@ -89,7 +90,14 @@ class App extends Component<Props, State> {
               {showUser && (
                   <li className="nav-item">
                     <Link to={"/user"} className="nav-link">
-                      User Page
+                      Providers
+                    </Link>
+                  </li>
+              )}
+              {showUser && (
+                  <li className="nav-item">
+                    <Link to={"/user/sub"} className="nav-link">
+                      Subscriptions
                     </Link>
                   </li>
               )}
@@ -133,6 +141,7 @@ class App extends Component<Props, State> {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/user" element={<BoardUser />} />
+              <Route path="/user/sub" element={<SubscriptionComponent />} />
               <Route path="/prov" element={<BoardProvider />} />
             </Routes>
           </div>

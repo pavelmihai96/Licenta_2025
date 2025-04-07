@@ -2,10 +2,10 @@ import { Component } from "react";
 
 import UserService from "../services/UserService";
 import eventFile from "../eventFile";
-import UserType from "../UserType";
-import UserResponse from "../UserResponse";
+import UserType from "../payload/response/UserType";
+import UserResponse from "../payload/response/UserResponse";
 import SubscriptionService from "../services/SubscriptionService";
-import SubscriptionRequest from "../SubscriptionRequest";
+import SubscriptionRequest from "../payload/request/SubscriptionRequest";
 import AuthService from "../services/AuthService";
 
 type Props = {};
@@ -16,7 +16,7 @@ type State = {
     message: boolean
 }
 
-export default class BoardUser extends Component<Props, State> {
+export default class ProvidersPage extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -42,7 +42,31 @@ export default class BoardUser extends Component<Props, State> {
                 this.setState({
                     message: true
                 });
+
+                UserService.getAllProviders(AuthService.getCurrentUser().id).then(
+                    response => {
+                        console.log(response.data);
+                        this.setState({
+                            providers: response.data
+                        });
+                    },
+                    error => {
+                        this.setState({
+                            content:
+                                (error.response &&
+                                    error.response.data &&
+                                    error.response.data.message) ||
+                                error.message ||
+                                error.toString()
+                        });
+
+                        if (error.response && error.response.status === 401) {
+                            eventFile.dispatch("logout");
+                        }
+                    }
+                )
         })
+
     }
 
     componentDidMount() {
@@ -67,7 +91,7 @@ export default class BoardUser extends Component<Props, State> {
                 }
             }
         );
-        UserService.getAllProviders().then(
+        UserService.getAllProviders(AuthService.getCurrentUser().id).then(
             response => {
                 console.log(response.data);
                 this.setState({
@@ -99,11 +123,11 @@ export default class BoardUser extends Component<Props, State> {
 
                     <ul>
                         {this.state.providers &&
-                            this.state.providers.map((prov, index) =>
+                            this.state.providers.map((p, index) =>
                                 <li key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1px" }}>
-                                    <span>Id: {prov.id},  Name: {prov.username}, Email: {prov.email}</span>
-                                    { !this.state.message ? (
-                                        <button onClick={() => this.handleClick(prov.id)}>Subscribe</button>
+                                    <span>Id: {p.id},  Name: {p.username}, Email: {p.email}</span>
+                                    { p.subscribed === "Not Subscribed" ? (
+                                        <button onClick={() => this.handleClick(p.id)}>Subscribe</button>
                                     ) : (
                                         <span style={{ color: "green" }}>Already subscribed</span>
                                     )

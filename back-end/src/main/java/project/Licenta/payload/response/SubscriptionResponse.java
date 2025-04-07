@@ -9,9 +9,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserResponse {
-    private Long id;
-    private String email;
+public class SubscriptionResponse {
+    private Long provider_id;
     private String username;
-    private String subscribed;
+    private String status;
+    private Long index_old;
+    private Long index_read;
 }
