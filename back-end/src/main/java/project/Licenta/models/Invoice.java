@@ -32,6 +32,6 @@ public class Invoice {
     private User provider_inv;  // Foreign key to a User with ROLE_PROVIDER
 
     private String status;
-    private long amount;
+    private Double amount;
     private Date due_date;
 }

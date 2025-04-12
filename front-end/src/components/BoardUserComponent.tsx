@@ -119,7 +119,7 @@ export default class ProvidersPage extends Component<Props, State> {
         return (
             <div className="container">
                 <header className="jumbotron">
-                    <h3>{this.state.content}</h3>
+                    <h1>Below are all the providers:</h1>
 
                     <ul>
                         {this.state.providers &&

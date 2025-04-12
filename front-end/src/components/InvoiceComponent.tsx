@@ -1,17 +1,16 @@
-import {Component} from "react";
-import UserService from "../services/UserService";
-import eventFile from "../eventFile";
-import AuthService from "../services/AuthService";
-import SubscriptionService from "../services/SubscriptionService";
 import SubscriptionResponse from "../payload/response/SubscriptionResponse";
-//import SubscriptionRequest from "../payload/request/SubscriptionRequest";
-import SubReq from "../payload/request/SubReq";
+import {Component} from "react";
+import SubscriptionService from "../services/SubscriptionService";
+import AuthService from "../services/AuthService";
+import eventFile from "../eventFile";
+import InvoiceResponse from "../payload/response/InvoiceResponse";
+import InvoiceService from "../services/InvoiceService";
 
 type Props = {};
 
 type State = {
     content: string,
-    subscriptions: Array<SubscriptionResponse>;
+    invoices: Array<InvoiceResponse>;
 }
 
 export default class SubscriptionComponent extends Component<Props, State> {
@@ -20,25 +19,25 @@ export default class SubscriptionComponent extends Component<Props, State> {
 
         this.state = {
             content: "",
-            subscriptions: []
+            invoices: []
         };
     }
 
-    handleClick(provider_id: number, status: string) {
+    handleClick(provider_id: number, amount: number) {
 
-        SubscriptionService.updateStatus(AuthService.getCurrentUser().id, provider_id, {status: status}).then(
+        InvoiceService.pay().then(
             response => {
                 this.setState({
                     content: response.data
                 });
                 console.log("stare schimbata");
 
-                SubscriptionService.getAllSubscriptions(AuthService.getCurrentUser().id).then(
+                InvoiceService.getAllInvoices(AuthService.getCurrentUser().id).then(
                     response => {
                         this.setState({
-                            subscriptions: response.data
+                            invoices: response.data
                         });
-                        console.log("in handle click: " + response.data);
+                        console.log("in componentdidmount: " + response.data);
                     },
                     error => {
                         this.setState({
@@ -60,10 +59,10 @@ export default class SubscriptionComponent extends Component<Props, State> {
     }
 
     componentDidMount() {
-        SubscriptionService.getAllSubscriptions(AuthService.getCurrentUser().id).then(
+        InvoiceService.getAllInvoices(AuthService.getCurrentUser().id).then(
             response => {
                 this.setState({
-                    subscriptions: response.data
+                    invoices: response.data
                 });
                 console.log("in componentdidmount: " + response.data);
             },
@@ -88,19 +87,16 @@ export default class SubscriptionComponent extends Component<Props, State> {
         return (
             <div className="container">
                 <header className="jumbotron">
-                    <h1>Below are all your subscriptions:</h1>
+
                     <ul>
-                        {this.state.subscriptions &&
-                            this.state.subscriptions.map((s, index) =>
+                        {this.state.invoices &&
+                            this.state.invoices.map((i, index) =>
                                 <li key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1px" }}>
-                                    <span>Id: {s.provider_id},  Name: {s.username},  status: {s.status},  last index: {s.index_old}</span>
-                                    { s.status === "active" ? (
-                                        <button onClick={() => this.handleClick(s.provider_id, "inactive")}>Unsubscribe</button>
+                                    <span>Id: {i.provider_id},  Name: {i.username},  status: {i.status},  amount: {i.amount}$,  due date: {i.due_date?.substring(0,10)}</span>
+                                    { i.status === "unpaid" ? (
+                                        <button onClick={() => this.handleClick(i.provider_id, i.amount)}>Pay</button>
                                     ) : (
-                                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                            <span style={{ color: "red" }}>Inactive</span>
-                                            <button onClick={() => this.handleClick(s.provider_id, "active")}>Subscribe</button>
-                                        </div>
+                                        <span style={{ color: "green" }}>Already paid</span>
                                     )
                                     }
                                 </li>

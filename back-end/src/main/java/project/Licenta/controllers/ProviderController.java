@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @RestController
 @RequestMapping("/licenta/provs")
-@CrossOrigin(origins = "http://localhost:8081")
 public class ProviderController {
     @Autowired
     private UserDetailsServiceImpl service;

@@ -13,6 +13,7 @@ import Profile from "./components/ProfileComponent";
 import BoardUser from "./components/BoardUserComponent";
 import BoardProvider from "./components/BoardProviderComponent";
 import SubscriptionComponent from "./components/SubscriptionComponent";
+import InvoiceComponent from "./components/InvoiceComponent";
 
 import eventFile from "./eventFile";
 
@@ -101,6 +102,13 @@ class App extends Component<Props, State> {
                     </Link>
                   </li>
               )}
+              {showUser && (
+                  <li className="nav-item">
+                    <Link to={"/user/inv"} className="nav-link">
+                      Invoices
+                    </Link>
+                  </li>
+              )}
             </div>
 
             {currentUser ? (
@@ -142,6 +150,7 @@ class App extends Component<Props, State> {
               <Route path="/profile" element={<Profile />} />
               <Route path="/user" element={<BoardUser />} />
               <Route path="/user/sub" element={<SubscriptionComponent />} />
+              <Route path="/user/inv" element={<InvoiceComponent />} />
               <Route path="/prov" element={<BoardProvider />} />
             </Routes>
           </div>

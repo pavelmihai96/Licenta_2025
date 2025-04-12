@@ -104,6 +104,7 @@ export default class Login extends Component<Props, State> {
 
         return (
             <div className="col-md-12">
+                <h1>Sa adaug doua tabele, consumer si provider, legate de user, pentru un mai bun control</h1>
                 <div className="card card-container">
                     <img
                         src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
